@@ -1,42 +1,4 @@
-#!/usr/bin/env bash
-
-set -e
-
-# Configure PHP date.timezone
-echo "date.timezone = $PHP_TIMEZONE" > /usr/local/etc/php/conf.d/timezone.ini
-
-# Configure Apache Document Root
-mkdir -p $APACHE_DOC_ROOT
-chown www-data:www-data $APACHE_DOC_ROOT
-sed -i "s|DocumentRoot /var/www/html|DocumentRoot $APACHE_DOC_ROOT|" /etc/apache2/apache2.conf
-echo "<Directory $APACHE_DOC_ROOT>" > /etc/apache2/conf-available/document-root-directory.conf
-echo "	AllowOverride All" >> /etc/apache2/conf-available/document-root-directory.conf
-echo "	Allow from All" >> /etc/apache2/conf-available/document-root-directory.conf
-echo "</Directory>" >> /etc/apache2/conf-available/document-root-directory.conf
-a2enconf "document-root-directory.conf"
-
-# Enable XDebug if needed
-if [ "$XDEBUG_ENABLE" = "1" ]; then
-    docker-php-ext-enable xdebug
-    mv /usr/local/etc/php/conf.d/99-xdebug.ini.disabled /usr/local/etc/php/conf.d/99-xdebug.ini
-    # Configure XDebug remote host
-    if [ -z "$HOST_IP" ]; then
-        # Allows to set HOST_IP by env variable because could be different from the one which come from ip route command
-        HOST_IP=$(/sbin/ip route|awk '/default/ { print $3 }')
-    fi;
-    echo "xdebug.remote_host=$HOST_IP" > /usr/local/etc/php/conf.d/xdebug_remote_host.ini
-fi;
-
-# Configure sSMTP
-if [ "$SSMTP_MAILHUB" ]; then
-    echo "mailhub=$SSMTP_MAILHUB" >> /etc/ssmtp/ssmtp.conf
-fi;
-if [ "$SSMTP_AUTH_USER" ]; then
-    echo "AuthUser=$SSMTP_AUTH_USER" >> /etc/ssmtp/ssmtp.conf
-fi;
-if [ "$SSMTP_AUTH_PASS" ]; then
-    echo "AuthPass=$SSMTP_AUTH_PASS" >> /etc/ssmtp/ssmtp.conf
-fi;
+#!/bin/bash
 
 #Symbolic links
 mkdir /www/
@@ -46,14 +8,16 @@ ln -s /www/domains/speedorder/batch /home/info/batch
 ln -s /www/domains/speedorder/include /home/info/include
 ln -s /www/domains/speedorder/scripts /home/info/scripts
 ln -s /www/domains/speedorder/wmbridge /home/info/wmbridge
+ln -s /www/domains/symfony /home/info/symfony
+ln -s /www/domains/include /home/info/include
 
 INCLUDE_PATH='".:/usr/local/lib/php:/www/domains/speedorder/include:/www/domains"'
 echo "include_path = $INCLUDE_PATH" >> /usr/local/etc/php/conf.d/999-php.ini
 echo "session.save_path = /tmp" >> /usr/local/etc/php/conf.d/999-php.ini
 
-cat <<EOF >/etc/apache2/conf-available/docker.conf
+cat <<EOF >/etc/apache2/conf-available/app.conf
 <VirtualHost *:80>
-    ServerName docker.loc
+    ServerName app.loc
     DocumentRoot "/www/domains"
     DirectoryIndex index.php
     Alias /sf /www/domains/symfony/data/web/sf
@@ -245,11 +209,12 @@ cat <<EOF >/etc/apache2/conf-available/asignaciones.conf
     </Directory>
 </VirtualHost>
 EOF
-a2enconf docker.conf
+a2enconf app.conf
 a2enconf speedfc.conf
 a2enconf cccart.conf
 a2enconf dressbarn.conf
 a2enconf symfony.conf
 a2enconf asignaciones.conf
 
-exec "apache2-foreground"
+service apache2 restart
+

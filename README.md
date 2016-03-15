@@ -25,12 +25,13 @@ Usage
 
 Standalone usage example with host's current working directory as document root:
 
-	$ docker run -p 80:80 -v $(pwd):/var/www/html webgriffe/php-apache-base
+	$ docker run -p 80:80 -v $(pwd):/var/www/html mikeshot/docker-lamp
 
 Credits
 -------
 
 [Webgriffe®](http://www.webgriffe.com/)
+mikeshot@gmail.com
 
 
 

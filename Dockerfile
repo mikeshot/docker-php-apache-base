@@ -1,9 +1,9 @@
 FROM php:5.5-apache
-MAINTAINER Webgriffe Srl <support@webgriffe.com>
+MAINTAINER Miguel Villafuerte <mikeshot@gmail.com>
 
 # Install GD
 RUN apt-get update \
-    && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng12-dev \
+    && apt-get install -y nano libfreetype6-dev libjpeg62-turbo-dev libpng12-dev \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install gd
 
@@ -25,6 +25,10 @@ COPY ./99-xdebug.ini.disabled /usr/local/etc/php/conf.d/
 
 # Install Mysql
 RUN docker-php-ext-install mysql mysqli pdo_mysql
+
+# Install Postgres
+RUN apt-get update && apt-get install -y libpq-dev libpq5 \
+    && docker-php-ext-install pgsql
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php \
@@ -54,7 +58,7 @@ RUN apt-get update \
     && docker-php-ext-install xsl
 
 # Define PHP_TIMEZONE env variable
-ENV PHP_TIMEZONE Europe/Rome
+ENV PHP_TIMEZONE America/Mexico_City
 
 # Configure Apache Document Root
 ENV APACHE_DOC_ROOT /var/www/html

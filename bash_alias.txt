@@ -1,0 +1,5 @@
+alias dicker-build='docker build -t mikeshot/docker-lamp .'
+alias docker-run='docker run -p 80:80 -v $(pwd):/var/www/html mikeshot/docker-lamp'
+alias docker-ssh='docker exec -ti mikeshot-lamp /bin/bash'
+alias docker-containers='docker ps'
+alias docker-ip='docker-machine ls'
