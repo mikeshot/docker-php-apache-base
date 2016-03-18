@@ -39,13 +39,27 @@ if [ "$SSMTP_AUTH_PASS" ]; then
 fi;
 
 #Symbolic links
-mkdir /www/
-ln -s /var/www/html /www/domains
-ln -s /www/domains /home/info
-ln -s /www/domains/speedorder/batch /home/info/batch
-ln -s /www/domains/speedorder/include /home/info/include
-ln -s /www/domains/speedorder/scripts /home/info/scripts
-ln -s /www/domains/speedorder/wmbridge /home/info/wmbridge
+if [ ! -d /www ]; then
+    mkdir /www
+fi;
+if [ ! -h /www/domains ]; then
+    ln -s /var/www/html /www/domains
+fi;
+if [ ! -h /home/info ]; then
+    ln -s /www/domains /home/info
+fi;
+if [ ! -h /home/info/batch ]; then
+    ln -s /www/domains/speedorder/batch /home/info/batch
+fi;
+if [ ! -h /home/info/include ]; then
+    ln -s /www/domains/speedorder/include /home/info/include
+fi;
+if [ ! -h /home/info/scripts ]; then
+    ln -s /www/domains/speedorder/scripts /home/info/scripts
+fi;
+if [ ! -h /home/info/wmbridge ]; then
+    ln -s /www/domains/speedorder/wmbridge /home/info/wmbridge
+fi;
 
 INCLUDE_PATH='".:/usr/local/lib/php:/www/domains/speedorder/include:/www/domains"'
 echo "include_path = $INCLUDE_PATH" >> /usr/local/etc/php/conf.d/999-php.ini
