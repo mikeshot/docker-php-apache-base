@@ -63,6 +63,9 @@ ENV PHP_TIMEZONE America/Mexico_City
 # Configure Apache Document Root
 ENV APACHE_DOC_ROOT /var/www/html
 
+# Configure to use nano on ssh session
+ENV TERM xterm
+
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
