@@ -1,28 +1,16 @@
 php:
-  image: webgriffe/magento1-dev
-  container_name: application-container
-  volumes_from:
-    - unison
+  image: mikeshot/docker-lamp
+  container_name: docker-lamp
   volumes:
-    - "~/.composer:/root/.composer"
-    - "~/.ssh:/root/.ssh"
+    - /Users/miguel/protobox:/var/www/html
   links:
-    - memcached
     - mariadb
-    - blackfire_agent:blackfire
   ports:
     - "80:80"
   environment:
-    HOST_IP: 192.168.99.1
-    APACHE_DOC_ROOT: /unison
-  working_dir: /unison
-
-unison:
-  image: leighmcculloch/unison
-  environment:
-    - UNISON_VERSION=2.48.3
-  ports:
-    - "5000:5000"
+    HOST_IP: 192.168.1.106
+    APACHE_DOC_ROOT: /var/www/html
+  working_dir: /Users/miguel/protobox
 
 mariadb-data:
   image: tianon/true
@@ -34,15 +22,4 @@ mariadb:
   volumes_from:
     - "mariadb-data"
   environment:
-      MYSQL_ROOT_PASSWORD: p4ssw0rd
-
-memcached:
-  image: memcached
-
-blackfire_agent:
-    image: blackfire/blackfire
-    environment:
-        - BLACKFIRE_SERVER_ID
-        - BLACKFIRE_SERVER_TOKEN
-        - BLACKFIRE_CLIENT_ID
-        - BLACKFIRE_CLIENT_TOKEN
+      MYSQL_ROOT_PASSWORD: root

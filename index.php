@@ -1,5 +1,5 @@
 <?php
 
-echo "Hello from Docker ! < />";
+echo "Hello from Docker LAMP ! < />";
 
 phpinfo();
