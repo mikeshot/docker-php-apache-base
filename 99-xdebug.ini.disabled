@@ -10,3 +10,4 @@ xdebug.var_display_max_data = 2048
 xdebug.var_display_max_depth = 128
 xdebug.max_nesting_level = 200
 xdebug.coverage_enable = 1
+xdebug.dump.SESSION=VVVDEBUG

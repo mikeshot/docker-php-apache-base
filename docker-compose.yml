@@ -10,6 +10,7 @@ php:
   environment:
     HOST_IP: 192.168.1.106
     APACHE_DOC_ROOT: /var/www/html
+    XDEBUG_ENABLE: 0
   working_dir: /Users/miguel/protobox
 
 mariadb-data:
